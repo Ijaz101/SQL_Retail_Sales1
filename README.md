@@ -1,4 +1,8 @@
 # SQL_Retail_Sales1
+  Creating the Database named Retail_Sales
+  
+  
+  
   DROP TABLE IF EXISTS Retail_sales;
 	CREATE TABLE Retail_sales(
 	transactions_id INT PRIMARY KEY,
