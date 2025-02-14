@@ -170,11 +170,6 @@ SQL – For data querying and analysis
 
 Relational Database Management System (RDBMS) – To store and manage sales data
 
-How to Use This Project
-
-Clone this repository:
-
-git clone https://github.com/yourusername/retail-sales-analysis.git
 
 Import the SQL file into your database management system (MySQL, PostgreSQL, etc.)
 
