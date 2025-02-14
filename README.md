@@ -19,7 +19,7 @@ CREATE TABLE Retail_sales(
     gender VARCHAR(15),
     age INT,
     category VARCHAR(15),
-    quantiy INT,
+    quantity INT,
     price_per_unit FLOAT,
     cogs FLOAT,
     total_sale FLOAT);
@@ -37,7 +37,7 @@ WHERE
     gender IS NULL OR
     age IS NULL OR
     category IS NULL OR
-    quantiy IS NULL OR
+    quantity IS NULL OR
     price_per_unit IS NULL OR
     cogs IS NULL OR
     total_sale IS NULL;
@@ -53,7 +53,7 @@ WHERE
     gender IS NULL OR
     age IS NULL OR
     category IS NULL OR
-    quantiy IS NULL OR
+    quantity IS NULL OR
     price_per_unit IS NULL OR
     cogs IS NULL OR
     total_sale IS NULL;
@@ -72,7 +72,7 @@ SELECT COUNT(DISTINCT customer_id) AS total_Customer FROM Retail_sales;
 
 Total Quantity Sold:
 
-SELECT SUM(quantiy) AS Total_quantity FROM Retail_sales;
+SELECT SUM(quantity) AS Total_quantity FROM Retail_sales;
 
 List of Unique Product Categories:
 
@@ -88,7 +88,7 @@ WHERE sale_date = '2022-11-5';
 Find all transactions where the category is 'Clothing' and quantity sold is greater than or equal to 4:
 
 SELECT * FROM Retail_sales
-WHERE category = 'Clothing' AND quantiy >= 4;
+WHERE category = 'Clothing' AND quantity >= 4;
 
 Retrieve transactions where total sales exceed 1000:
 
@@ -149,3 +149,41 @@ SELECT * FROM (
 WHERE rank = 1;
 
 Number of Orders in Different Shifts:
+
+WITH Hourly AS (
+    SELECT *,
+        CASE 
+            WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
+            WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
+            ELSE 'Evening'
+        END AS Shift
+    FROM Retail_sales
+)
+SELECT shift, COUNT(transactions_id) AS Total_orders
+FROM Hourly
+GROUP BY shift
+ORDER BY 2 DESC;
+
+Technologies Used
+
+SQL – For data querying and analysis
+
+Relational Database Management System (RDBMS) – To store and manage sales data
+
+How to Use This Project
+
+Clone this repository:
+
+git clone https://github.com/yourusername/retail-sales-analysis.git
+
+Import the SQL file into your database management system (MySQL, PostgreSQL, etc.)
+
+Run the queries to analyze the dataset
+
+Future Enhancements
+
+Implement data visualization using Python (Pandas, Matplotlib, Seaborn)
+
+Automate data ingestion using ETL pipelines
+
+Perform predictive analytics using machine learning models
