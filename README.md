@@ -1,140 +1,151 @@
-# SQL_Retail_Sales1
-  Creating the Database named Retail_Sales
-  
-  
-  
-  DROP TABLE IF EXISTS Retail_sales;
-	CREATE TABLE Retail_sales(
-	transactions_id INT PRIMARY KEY,
-	sale_date DATE,
-	sale_time TIME, 
-	customer_id INT,
-	gender VARCHAR(15),
-	age INT,
-	category VARCHAR(15),
-	quantiy INT,
-	price_per_unit FLOAT,
-	cogs FLOAT,
-	total_sale FLOAT)
+Retail Sales Data Analysis
 
-	SELECT * from Retail_sales
+Overview
 
-	SELECT * FROM  
-	Retail_sales
-	WHERE 
-	transactions_id IS NULL  OR
-	sale_date IS NULL OR
-	sale_time IS NULL OR
-	customer_id IS NULL OR
-	gender IS NULL OR
-	age IS NULL OR
-	category IS NULL OR
-	quantiy IS NULL OR
-	price_per_unit IS NULL OR
-	cogs IS NULL OR
-	total_sale IS NULL
-	
-	--Delete null values-- 
-	DELETE FROM  
-	Retail_sales
-	WHERE 
-	transactions_id IS NULL  OR
-	sale_date IS NULL OR
-	sale_time IS NULL OR
-	customer_id IS NULL OR
-	gender IS NULL OR
-	age IS NULL OR
-	category IS NULL OR
-	quantiy IS NULL OR
-	price_per_unit IS NULL OR
-	cogs IS NULL OR
-	total_sale IS NULL
+This project is a SQL-based retail sales data analysis that provides various insights into customer transactions. The dataset consists of sales transactions, including details such as date, time, customer demographics, product categories, quantity sold, and total sales amount.
 
-	SELECT * FROM Retail_sales
+The SQL queries used in this project cover a wide range of data analysis techniques, including aggregation, filtering, ranking, and grouping. The objective is to extract meaningful insights and trends from the retail sales data.
 
-	--Total Sales--
-	SELECT sum(total_sale) AS Total_sales FROM Retail_sales
+Database Schema
 
-	--Count of Customer--
-	SELECT COUNT(DISTINCT customer_id) AS total_Customer FROM Retail_sales
+The project starts by creating a table Retail_sales with the following fields:
 
-	--Total Qty Sold--
-	SELECT sum(quantiy) AS Total_quantity FROM Retail_sales
-	
-	--Total Categories--
-	SELECT DISTINCT category  FROM Retail_sales
-	
-	--All Sales made on 22-11-5--
-	SELECT * FROM Retail_sales
-	WHERE sale_date = '2022-11-5'
+DROP TABLE IF EXISTS Retail_sales;
+CREATE TABLE Retail_sales(
+    transactions_id INT PRIMARY KEY,
+    sale_date DATE,
+    sale_time TIME, 
+    customer_id INT,
+    gender VARCHAR(15),
+    age INT,
+    category VARCHAR(15),
+    quantiy INT,
+    price_per_unit FLOAT,
+    cogs FLOAT,
+    total_sale FLOAT);
 
-	--All transactions where category is clothing and qty sold is 4 or more than 4--
-	SELECT * FROM Retail_sales
-	WHERE category = 'Clothing' AND quantiy >= 4
+Data Cleaning
 
-	--Total Sales for each category--
-	SELECT category, SUM(total_sale) as Total_sales
-	FROM Retail_sales
-	GROUP BY category
-	ORDER BY 2 DESC
+Checking for NULL values across all fields:
 
-	--Average age of customers who purchased item from Beauty category--
-	SELECT AVG(age)
-	FROM Retail_sales
-	WHERE category = 'Beauty'
+SELECT * FROM Retail_sales
+WHERE 
+    transactions_id IS NULL  OR
+    sale_date IS NULL OR
+    sale_time IS NULL OR
+    customer_id IS NULL OR
+    gender IS NULL OR
+    age IS NULL OR
+    category IS NULL OR
+    quantiy IS NULL OR
+    price_per_unit IS NULL OR
+    cogs IS NULL OR
+    total_sale IS NULL;
 
-	--Find all transactions where total sale is greater than 1000--
-	SELECT * 
-	FROM Retail_sales
-	WHERE total_sale >1000
+Deleting records with NULL values to ensure data consistency:
 
-	--Find number of transaction made by each gender in each category--
-	SELECT category, gender, COUNT(transactions_id) as no_of_transactions
-	FROM Retail_sales
-	GROUP BY category, gender
-	ORDER BY 1
+DELETE FROM Retail_sales
+WHERE 
+    transactions_id IS NULL  OR
+    sale_date IS NULL OR
+    sale_time IS NULL OR
+    customer_id IS NULL OR
+    gender IS NULL OR
+    age IS NULL OR
+    category IS NULL OR
+    quantiy IS NULL OR
+    price_per_unit IS NULL OR
+    cogs IS NULL OR
+    total_sale IS NULL;
 
-	--Average sale of each month, best selling in each month of year--
-	
-	SELECT * FROM
-	(
-	SELECT EXTRACT(YEAR FROM sale_date ) as year, 
-	EXTRACT(MONTH FROM sale_date) as month, 
-	AVG(total_sale) as total_sale,
-	RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date ) ORDER BY AVG(total_sale)) as rank 
-	FROM Retail_sales
-	GROUP BY 1,2
-	ORDER BY 1,2
-	) AS t1
-	WHERE rank = 1
+Key Analysis Performed
 
-	-- Top 5 Customers based on highest total sales--
+1. General Sales Insights
 
-	SELECT customer_id, SUM(total_sale) as Total_sales
-	FROM Retail_sales
-	GROUP BY customer_id
-	ORDER BY 2 DESC
-	LIMIT 5
+Total Sales Revenue:
 
-	-- No. of customers who purchased from each category--
-	
-	SELECT category, COUNT(DISTINCT customer_id) AS No_of_Customers
-	FROM Retail_sales
-	GROUP BY category
-	ORDER BY 2 DESC
+SELECT SUM(total_sale) AS Total_sales FROM Retail_sales;
 
-	-- Each shift, number of orders, example: Morning <=12, Afternoon 12-17, Evening >=17--
+Total Number of Unique Customers:
 
-	WITH Hourly AS 
-	(SELECT  
-		*,
-		CASE WHEN EXTRACT(HOUR FROM sale_time) <12 THEN 'Morning'
-		WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-		ELSE 'Evening'
-		END AS Shift
-	FROM Retail_sales)
-	SELECT shift, COUNT(transactions_id) AS Total_orders
-	FROM Hourly
-	GROUP BY shift
-	ORDER BY 2 DESC
-	
+SELECT COUNT(DISTINCT customer_id) AS total_Customer FROM Retail_sales;
+
+Total Quantity Sold:
+
+SELECT SUM(quantiy) AS Total_quantity FROM Retail_sales;
+
+List of Unique Product Categories:
+
+SELECT DISTINCT category FROM Retail_sales;
+
+2. Transaction-based Queries
+
+Retrieve all sales made on a specific date ('2022-11-5'):
+
+SELECT * FROM Retail_sales
+WHERE sale_date = '2022-11-5';
+
+Find all transactions where the category is 'Clothing' and quantity sold is greater than or equal to 4:
+
+SELECT * FROM Retail_sales
+WHERE category = 'Clothing' AND quantiy >= 4;
+
+Retrieve transactions where total sales exceed 1000:
+
+SELECT * FROM Retail_sales
+WHERE total_sale > 1000;
+
+3. Category-wise Analysis
+
+Total Sales for Each Category:
+
+SELECT category, SUM(total_sale) AS Total_sales
+FROM Retail_sales
+GROUP BY category
+ORDER BY 2 DESC;
+
+Average Age of Customers Purchasing Beauty Products:
+
+SELECT AVG(age) FROM Retail_sales
+WHERE category = 'Beauty';
+
+Number of Transactions by Gender for Each Category:
+
+SELECT category, gender, COUNT(transactions_id) AS no_of_transactions
+FROM Retail_sales
+GROUP BY category, gender
+ORDER BY 1;
+
+4. Customer Insights
+
+Top 5 Customers Based on Highest Total Sales:
+
+SELECT customer_id, SUM(total_sale) AS Total_sales
+FROM Retail_sales
+GROUP BY customer_id
+ORDER BY 2 DESC
+LIMIT 5;
+
+Number of Customers Who Purchased from Each Category:
+
+SELECT category, COUNT(DISTINCT customer_id) AS No_of_Customers
+FROM Retail_sales
+GROUP BY category
+ORDER BY 2 DESC;
+
+5. Time-based Analysis
+
+Best-Selling Month in Each Year Using Ranking and Aggregation:
+
+SELECT * FROM (
+    SELECT EXTRACT(YEAR FROM sale_date ) AS year, 
+    EXTRACT(MONTH FROM sale_date) AS month, 
+    AVG(total_sale) AS total_sale,
+    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale)) AS rank 
+    FROM Retail_sales
+    GROUP BY 1,2
+    ORDER BY 1,2
+) AS t1
+WHERE rank = 1;
+
+Number of Orders in Different Shifts:
